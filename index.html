@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Stitch Keeper</title>
+  <meta name="description" content="Row counters and project notes for knitting. Works offline.">
+  <meta name="theme-color" content="#8a4f7d">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Project list -->
+  <section id="projects-view" class="view">
+    <header class="topbar">
+      <h1>Stitch Keeper</h1>
+      <button class="icon-btn" id="menu-btn" aria-label="Backup and settings">⋯</button>
+    </header>
+    <main class="content">
+      <ul id="project-list" class="project-list"></ul>
+      <p id="empty-projects" class="empty" hidden>No projects yet. Start one below.</p>
+      <button class="btn primary wide" id="new-project-btn">+ New project</button>
+    </main>
+  </section>
+
+  <!-- Single project -->
+  <section id="project-view" class="view" hidden>
+    <header class="topbar">
+      <button class="icon-btn" id="back-btn" aria-label="Back to projects">‹</button>
+      <h1 id="project-title" class="truncate"></h1>
+      <button class="icon-btn" id="edit-project-btn" aria-label="Edit project">✎</button>
+    </header>
+    <main class="content">
+      <div class="main-counter">
+        <div class="label">Row</div>
+        <div class="row-number" id="row-number">0</div>
+        <div class="row-target" id="row-target"></div>
+        <div class="progress" id="progress" hidden><div id="progress-bar"></div></div>
+      </div>
+
+      <div class="main-controls">
+        <button class="btn round" id="row-minus" aria-label="Row minus one">−</button>
+        <button class="btn plus" id="row-plus" aria-label="Row plus one">+1 row</button>
+        <button class="btn round" id="undo-btn" aria-label="Undo">↶</button>
+      </div>
+
+      <div class="section-head">
+        <h2>Counters</h2>
+        <button class="btn small" id="add-counter-btn">+ Add</button>
+      </div>
+      <ul id="counter-list" class="counter-list"></ul>
+      <p id="empty-counters" class="empty small-text" hidden>
+        Add a counter for repeats, decreases, or anything else you need to track.
+      </p>
+
+      <div class="section-head">
+        <h2>Notes</h2>
+        <span class="saved" id="notes-saved" hidden>Saved</span>
+      </div>
+      <textarea id="notes" rows="5" placeholder="Needle size, changes you made, where you left off…"></textarea>
+
+      <label class="toggle">
+        <input type="checkbox" id="wake-toggle">
+        <span>Keep screen on</span>
+      </label>
+    </main>
+  </section>
+
+  <!-- Project dialog -->
+  <dialog id="project-dialog">
+    <form method="dialog" id="project-form">
+      <h2 id="project-dialog-title">New project</h2>
+      <label>Name
+        <input name="name" required maxlength="80" placeholder="e.g. Cozy cabled hat">
+      </label>
+      <label>Total rows in this section <span class="hint">(optional)</span>
+        <input name="target" type="number" min="1" inputmode="numeric" placeholder="e.g. 40">
+      </label>
+      <button type="button" class="btn" id="reset-rows-btn" hidden>Reset row count to 0</button>
+      <div class="dialog-actions">
+        <button type="button" class="btn danger" id="delete-project-btn" hidden>Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Counter dialog -->
+  <dialog id="counter-dialog">
+    <form method="dialog" id="counter-form">
+      <h2 id="counter-dialog-title">New counter</h2>
+      <label>Name
+        <input name="name" required maxlength="40" placeholder="e.g. Cable repeat">
+      </label>
+      <label>Repeats every <span class="hint">(optional, e.g. 8 for an 8-row repeat)</span>
+        <input name="max" type="number" min="1" inputmode="numeric" placeholder="No limit">
+      </label>
+      <label class="toggle">
+        <input type="checkbox" name="follow" checked>
+        <span>Advance with each row</span>
+      </label>
+      <p class="hint">When this is on, tapping “+1 row” moves this counter too.</p>
+      <button type="button" class="btn" id="reset-counter-btn" hidden>Reset counter to 0</button>
+      <div class="dialog-actions">
+        <button type="button" class="btn danger" id="delete-counter-btn" hidden>Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Backup dialog -->
+  <dialog id="menu-dialog">
+    <div class="dialog-body">
+      <h2>Backup</h2>
+      <p class="hint">Your projects are saved on this device only. Save a backup file now and then, or use one to move your projects to another device.</p>
+      <button class="btn wide" id="export-btn">Save backup file</button>
+      <label class="btn wide file-btn">Restore from backup…
+        <input type="file" id="import-input" accept="application/json,.json" hidden>
+      </label>
+      <div class="dialog-actions">
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
